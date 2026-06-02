@@ -1,0 +1,14 @@
+langchain
+langchain-community
+langchain-chroma
+langchain-ollama
+
+pypdf
+unstructured
+python-docx
+
+sentence-transformers
+
+python-dotenv
+pydantic
+rich
