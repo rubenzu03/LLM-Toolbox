@@ -2,10 +2,12 @@ langchain
 langchain-community
 langchain-chroma
 langchain-ollama
+langchain-text-splitters
 
 pypdf
 unstructured
 python-docx
+chromadb
 
 sentence-transformers
 
