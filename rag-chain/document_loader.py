@@ -1,24 +1,21 @@
 import os
+from pathlib import Path
+
 import pypdf
 from langchain_core.documents import Document
 
-DOCUMENT_PATH = os.environ.get("DOCUMENTS_PATH", "/documents/")
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DOCUMENT_PATH = _PROJECT_ROOT / os.environ.get("DOCUMENTS_PATH", "documents")
 
 def load_documents():
     documents = []
-    for filename in os.listdir(DOCUMENT_PATH):
-        if filename.endswith(".pdf"):
-            file_path = os.path.join(DOCUMENT_PATH, filename)
-            with open(file_path, "rb") as f:
+    for item in DOCUMENT_PATH.iterdir():
+        if item.suffix == ".pdf":
+            with open(item, "rb") as f:
                 pdf = pypdf.PdfReader(f)
-                text = ""
-                for page in pdf.pages:
-                    text += page.extract_text()
-                documents.append(Document(page_content=text, metadata={"source": filename}))
-        if filename.endswith(".txt"):
-            file_path = os.path.join(DOCUMENT_PATH, filename)
-            with open(file_path, "r", encoding="utf-8") as f:
-                text = f.read()
-                documents.append(Document(page_content=text, metadata={"source": filename}))
-                
+                text = "".join(page.extract_text() for page in pdf.pages)
+                documents.append(Document(page_content=text, metadata={"source": item.name}))
+        elif item.suffix == ".txt":
+            text = item.read_text(encoding="utf-8")
+            documents.append(Document(page_content=text, metadata={"source": item.name}))
     return documents
