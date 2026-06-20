@@ -69,6 +69,7 @@ chroma/
 # Vector stores
 vectorstore/
 vectorstores/
+vector_store/
 
 # LangSmith local files
 .langsmith/
@@ -80,6 +81,10 @@ models/
 # Temporary generated files
 tmp/
 temp/
+
+# Documents (track only the folder, not contents)
+documents/
+!documents/.gitkeep
 
 # SQLite databases
 *.db
