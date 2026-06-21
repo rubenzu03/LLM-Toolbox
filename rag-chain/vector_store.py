@@ -11,6 +11,7 @@ EMBEDDING_MODEL_NAME = os.environ.get("EMBEDDING_MODEL_NAME", "all-MiniLM-L6-v2"
 
 _embeddings = None
 
+
 def get_embeddings():
     global _embeddings
     if _embeddings is None:
@@ -29,11 +30,10 @@ def get_vector_store() -> Chroma:
 def save_to_chroma(chunks: list[Document]):
     if CHROMA_PATH.exists():
         shutil.rmtree(CHROMA_PATH)
-    
+
     Chroma.from_documents(
         chunks,
         get_embeddings(),
         collection_name=COLLECTION_NAME,
         persist_directory=str(CHROMA_PATH),
     )
-    

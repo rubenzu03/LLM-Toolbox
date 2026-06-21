@@ -9,6 +9,8 @@ unstructured
 python-docx
 chromadb
 
+ruff
+
 sentence-transformers
 
 python-dotenv
