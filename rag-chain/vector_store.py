@@ -30,7 +30,7 @@ def save_to_chroma(chunks: list[Document]):
     if CHROMA_PATH.exists():
         shutil.rmtree(CHROMA_PATH)
     
-    db = Chroma.from_documents(
+    Chroma.from_documents(
         chunks,
         get_embeddings(),
         collection_name=COLLECTION_NAME,
