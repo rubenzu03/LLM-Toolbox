@@ -43,11 +43,4 @@ jobs:
         run: mypy . --ignore-missing-imports --warn-unused-ignores
 
       - name: Verify imports
-        run: python -c "
-          from document_loader import load_documents;
-          from ingester import chunk_text;
-          from ollama_model_factory import create_model, get_installed_models;
-          from vector_store import get_vector_store, save_to_chroma;
-          from webpage_parser import load_web_page;
-          print('All imports OK')
-          "
+        run: python -c "from document_loader import load_documents; from ingester import chunk_text; from ollama_model_factory import create_model, get_installed_models; from vector_store import get_vector_store, save_to_chroma; from webpage_parser import load_web_page; print('All imports OK')"
