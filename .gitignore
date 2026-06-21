@@ -4,3 +4,94 @@
 
 # LangGraph
 .langgraph_api/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Build / Distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type Checking
+.mypy_cache/
+.pyre/
+.pytype/
+
+# Linting
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# LangChain / AI
+
+# ChromaDB local storage
+chroma/
+.chromadb/
+
+# FAISS indexes
+*.faiss
+*.pkl
+
+# Vector stores
+vectorstore/
+vectorstores/
+vector_store/
+
+# LangSmith local files
+.langsmith/
+
+# Model cache
+.cache/
+models/
+
+# Temporary generated files
+tmp/
+temp/
+
+# Documents (track only the folder, not contents)
+documents/
+!documents/.gitkeep
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets
+secrets.json
+credentials.json
+service-account.json
