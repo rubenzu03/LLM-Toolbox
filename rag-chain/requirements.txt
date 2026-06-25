@@ -2,7 +2,6 @@ langchain
 langchain-community
 langchain-chroma
 langchain-ollama
-langchain-huggingface
 langchain-text-splitters
 
 pypdf
@@ -11,8 +10,6 @@ python-docx
 chromadb
 
 ruff
-
-sentence-transformers
 
 python-dotenv
 pydantic
