@@ -14,7 +14,6 @@ if __name__ == "__main__":
     bs4_strainer = bs4.SoupStrainer(
         class_=("post-title", "post-header", "post-content")
     )
-    
-    
+
     assert len(docs) == 1
     print(f"Total characters: {len(docs[0].page_content)}")

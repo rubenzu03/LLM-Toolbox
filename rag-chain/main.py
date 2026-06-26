@@ -9,6 +9,8 @@ from document_loader import DOCUMENT_PATH, load_documents
 from ingester import chunk_text
 from ollama_model_factory import create_model, get_installed_models
 from vector_store import get_vector_store, save_to_chroma
+from coding_agent.coding_agent import build_coding_agent
+from prompts import RAG_PROMPT_TEMPLATE
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
@@ -17,31 +19,18 @@ if LANGSMITH_API_KEY:
     os.environ["LANGSMITH_TRACING"] = "true"
     os.environ["LANGSMITH_SESSION"] = "RAG Chain"
 
-PROMPT_TEMPLATE = """You are an assistant for question-answering tasks.
-Use the following pieces of retrieved context to answer the question.
-If you don't know the answer, just say that you don't know.
-Keep the answer concise.
-
-Context:
-{context}
-
-Question:
-{input}
-
-Answer:"""
-
 
 def build_chain(model_name: str | None = None):
     if model_name is None:
         models = get_installed_models()
         if not models:
             print("No Ollama models found. Install one with: ollama pull <model>")
-            return None
+            return None, None
         model_name = models[0]
         print(f"Using model: {model_name}")
 
     llm = create_model(model_name)
-    prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
+    prompt = ChatPromptTemplate.from_template(RAG_PROMPT_TEMPLATE)
 
     vector_store = get_vector_store()
     retriever = vector_store.as_retriever(search_kwargs={"k": 4})
@@ -58,7 +47,7 @@ def build_chain(model_name: str | None = None):
         | llm
         | StrOutputParser()
     )
-    return chain
+    return chain, llm
 
 
 def ingest():
@@ -75,19 +64,38 @@ def ingest():
 def main():
     ingest()
 
-    chain = build_chain()
+    chain, llm = build_chain()
     if chain is None:
         return
 
-    print("\nRAG Query. Type 'exit' to quit.\n")
+    coding_agent = None
+
+    print("\nRAG Query. Commands: /code  /rag  exit")
+    mode = "rag"
     while True:
-        query = input("> ").strip()
+        query = input(f"({mode}) > ").strip()
         if query.lower() in ("exit", "quit"):
             break
+        if query == "/rag":
+            mode = "rag"
+            continue
+        if query == "/code":
+            if coding_agent is None:
+                coding_agent = build_coding_agent(llm)
+                print("Coding agent ready.")
+            mode = "code"
+            continue
         if not query:
             continue
-        result = chain.invoke(query)
-        print(f"\nAnswer: {result}\n")
+
+        if mode == "code":
+            result = coding_agent.invoke(
+                {"messages": [{"role": "user", "content": query}]}
+            )
+            print(f"\n{result['messages'][-1].content}\n")
+        else:
+            result = chain.invoke(query)
+            print(f"\nAnswer: {result}\n")
 
 
 if __name__ == "__main__":

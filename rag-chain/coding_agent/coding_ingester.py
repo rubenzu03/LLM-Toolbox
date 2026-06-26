@@ -39,6 +39,7 @@ def load_codebase_files():
             codebase_files.append(doc)
     return codebase_files
 
+
 def split_documents(documents):
     chunks = []
     for doc in documents:
@@ -48,6 +49,8 @@ def split_documents(documents):
                 language=Language(lang), chunk_size=1000, chunk_overlap=200
             )
         except ValueError:
-            splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+            splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000, chunk_overlap=200
+            )
         chunks.extend(splitter.split_documents([doc]))
     return chunks
