@@ -4,6 +4,7 @@ langchain-chroma
 langchain-ollama
 
 langchain-text-splitters
+langgraph-checkpoint-sqlite
 
 pypdf
 unstructured

@@ -67,10 +67,11 @@ def write_file(filepath: str, content: str) -> str:
 tools = [search_codebase, read_full_file, list_project_files, write_file]
 
 
-def build_coding_agent(model: BaseChatModel):
+def build_coding_agent(model: BaseChatModel, checkpointer=None):
     return create_agent(
         model=model,
         tools=tools,
         system_prompt=CODE_SYSTEM_PROMPT,
         name="coding_agent",
+        checkpointer=checkpointer,
     )
