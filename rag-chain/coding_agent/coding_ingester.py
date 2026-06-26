@@ -40,4 +40,14 @@ def load_codebase_files():
     return codebase_files
 
 def split_documents(documents):
-    
+    chunks = []
+    for doc in documents:
+        lang = doc.metadata.get("language")
+        try:
+            splitter = RecursiveCharacterTextSplitter.from_language(
+                language=Language(lang), chunk_size=1000, chunk_overlap=200
+            )
+        except ValueError:
+            splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        chunks.extend(splitter.split_documents([doc]))
+    return chunks
