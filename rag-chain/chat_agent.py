@@ -1,7 +1,6 @@
 from langchain.tools import tool
 from langchain.agents import create_agent
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.documents import Document
 
 from vector_store import get_vector_store
 from prompts import RAG_PROMPT_TEMPLATE

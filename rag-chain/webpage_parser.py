@@ -15,5 +15,7 @@ if __name__ == "__main__":
         class_=("post-title", "post-header", "post-content")
     )
 
+    url = "https://example.com"
+    docs = load_web_page(url, bs_kwargs={"parse_only": bs4_strainer})
     assert len(docs) == 1
     print(f"Total characters: {len(docs[0].page_content)}")
