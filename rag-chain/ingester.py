@@ -19,10 +19,6 @@ def chunk_text(documents: list[Document]):
 
     chunks = text_splitter.split_documents(documents)
 
-    if chunks:
-        document = chunks[0]
-        print(f"Document content: {document.page_content}")
-        print(f"Document metadata: {document.metadata}")
     print(f"Created {len(chunks)} chunks from {len(documents)} document(s)")
 
     return chunks

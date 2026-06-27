@@ -1,4 +1,5 @@
 import os
+import contextlib
 from pathlib import Path
 
 import pypdf
@@ -13,8 +14,9 @@ def load_documents():
     for item in DOCUMENT_PATH.iterdir():
         if item.suffix == ".pdf":
             with open(item, "rb") as f:
-                pdf = pypdf.PdfReader(f)
-                text = "".join(page.extract_text() for page in pdf.pages)
+                with contextlib.redirect_stderr(open(os.devnull, "w")):
+                    pdf = pypdf.PdfReader(f, strict=False)
+                    text = "".join(page.extract_text() for page in pdf.pages)
                 documents.append(
                     Document(page_content=text, metadata={"source": item.name})
                 )

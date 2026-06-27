@@ -2,8 +2,9 @@ langchain
 langchain-community
 langchain-chroma
 langchain-ollama
-langchain-huggingface
+
 langchain-text-splitters
+langgraph-checkpoint-sqlite
 
 pypdf
 unstructured
@@ -11,8 +12,6 @@ python-docx
 chromadb
 
 ruff
-
-sentence-transformers
 
 python-dotenv
 pydantic

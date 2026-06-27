@@ -95,3 +95,5 @@ documents/
 secrets.json
 credentials.json
 service-account.json
+rag-chain/checkpoints.db-shm
+rag-chain/checkpoints.db-wal
