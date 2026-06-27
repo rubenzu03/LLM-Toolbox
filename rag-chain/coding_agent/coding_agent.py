@@ -15,7 +15,9 @@ CODEBASE_PATH = os.environ.get("CODEBASE_PATH", "codebase")
 def _get_retriever():
     return Chroma(
         collection_name=COLLECTION_NAME,
-        embedding_function=OllamaEmbeddings(model=os.environ.get("EMBEDDING_MODEL_NAME", "nomic-embed-text")),
+        embedding_function=OllamaEmbeddings(
+            model=os.environ.get("EMBEDDING_MODEL_NAME", "nomic-embed-text")
+        ),
         persist_directory=str(CHROMA_PATH),
     ).as_retriever(search_kwargs={"k": 5})
 
