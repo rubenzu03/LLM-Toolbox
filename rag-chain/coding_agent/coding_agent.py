@@ -8,6 +8,7 @@ from langchain_ollama import OllamaEmbeddings
 
 from vector_store import CHROMA_PATH, COLLECTION_NAME
 from prompts import CODE_SYSTEM_PROMPT
+from web_researcher.web_researcher import search_web, fetch_webpage
 
 CODEBASE_PATH = os.environ.get("CODEBASE_PATH", "codebase")
 
@@ -24,12 +25,21 @@ def _get_retriever():
 
 @tool
 def search_codebase(query: str) -> str:
-    """Search the codebase vector store for relevant code snippets."""
+    """Search only the LOCAL codebase for existing code. Do NOT use this for external libraries, documentation, or current best practices — use search_web instead."""
     retriever = _get_retriever()
     results = retriever.invoke(query)
-    return "\n\n---\n\n".join(
+    if not results:
+        return "No relevant code found."
+    output = "\n\n---\n\n".join(
         f"File: {r.metadata['source']}\n{r.page_content}" for r in results
     )
+    output += (
+        "\n\n---\n"
+        "Note: If the above code does not fully answer the question, "
+        "use the search_web tool to search the internet for external libraries, "
+        "documentation, or best practices."
+    )
+    return output
 
 
 @tool
@@ -69,11 +79,33 @@ def write_file(filepath: str, content: str) -> str:
 tools = [search_codebase, read_full_file, list_project_files, write_file]
 
 
-def build_coding_agent(model: BaseChatModel, checkpointer=None):
+def build_coding_agent(
+    model: BaseChatModel, checkpointer=None, enable_web_search=False
+):
+    if enable_web_search:
+        agent_tools = [
+            search_web,
+            fetch_webpage,
+            search_codebase,
+            read_full_file,
+            list_project_files,
+            write_file,
+        ]
+        prompt = (
+            "You are a coding assistant with web search and codebase tools.\n\n"
+            "IMPORTANT - Tool selection rules:\n"
+            "- For EXTERNAL LIBRARIES, APIs, DOCUMENTATION, BEST PRACTICES: call search_web.\n"
+            "- For existing code in the LOCAL codebase: call search_codebase.\n"
+            "- If search_codebase returns nothing useful, call search_web as backup.\n"
+            "- Never say you don't know without first calling search_web for external topics."
+        )
+    else:
+        agent_tools = [search_codebase, read_full_file, list_project_files, write_file]
+        prompt = CODE_SYSTEM_PROMPT
     return create_agent(
         model=model,
-        tools=tools,
-        system_prompt=CODE_SYSTEM_PROMPT,
+        tools=agent_tools,
+        system_prompt=prompt,
         name="coding_agent",
         checkpointer=checkpointer,
     )

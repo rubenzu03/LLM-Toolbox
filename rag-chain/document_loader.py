@@ -10,11 +10,14 @@ DOCUMENT_PATH = _PROJECT_ROOT / os.environ.get("DOCUMENTS_PATH", "documents")
 
 
 def load_documents():
+    """Load documents from the specified DOCUMENT_PATH, supporting PDF and TXT files."""
     documents = []
     for item in DOCUMENT_PATH.iterdir():
         if item.suffix == ".pdf":
             with open(item, "rb") as f:
-                with contextlib.redirect_stderr(open(os.devnull, "w")):
+                with contextlib.redirect_stderr(
+                    open(os.devnull, "w", encoding="utf-8")
+                ):
                     pdf = pypdf.PdfReader(f, strict=False)
                     text = "".join(page.extract_text() for page in pdf.pages)
                 documents.append(

@@ -6,9 +6,11 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from document_loader import DOCUMENT_PATH, load_documents
 from ingester import chunk_text
 from ollama_model_factory import create_model, get_installed_models
-from vector_store import save_to_chroma
 from coding_agent.coding_agent import build_coding_agent
 from chat_agent import build_chat_agent
+
+from vector_store import save_to_chroma
+
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
@@ -16,6 +18,8 @@ LANGSMITH_API_KEY = os.environ.get("LANGSMITH_API_KEY")
 if LANGSMITH_API_KEY:
     os.environ["LANGSMITH_TRACING"] = "true"
     os.environ["LANGSMITH_SESSION"] = "RAG Chain"
+
+ENABLE_WEB_SEARCH = os.environ.get("ENABLE_WEB_SEARCH", "false").lower() == "true"
 
 
 def ingest():
@@ -43,7 +47,9 @@ def main():
 
     conn = sqlite3.connect("checkpoints.db", check_same_thread=False)
     checkpointer = SqliteSaver(conn)
-    chat_agent = build_chat_agent(llm, checkpointer)
+    chat_agent = build_chat_agent(
+        llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH
+    )
     coding_agent = None
     thread_id = "default"
 
@@ -59,19 +65,26 @@ def main():
             continue
         if query == "/chat":
             if chat_agent is None:
-                chat_agent = build_chat_agent(llm, checkpointer)
+                chat_agent = build_chat_agent(
+                    llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH
+                )
             mode = "chat"
             continue
         if query == "/code":
             if coding_agent is None:
-                coding_agent = build_coding_agent(llm, checkpointer)
+                coding_agent = build_coding_agent(
+                    llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH
+                )
                 print("Coding agent ready.")
             mode = "code"
             continue
         if not query:
             continue
 
-        agent = coding_agent if mode == "code" else chat_agent
+        if mode == "code":
+            agent = coding_agent
+        else:
+            agent = chat_agent
         result = agent.invoke(
             {"messages": [{"role": "user", "content": query}]},
             config={"configurable": {"thread_id": thread_id}},

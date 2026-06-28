@@ -1,15 +1,8 @@
 RAG_PROMPT_TEMPLATE = """You are an assistant for question-answering tasks.
-Use the following pieces of retrieved context to answer the question.
-If you don't know the answer, just say that you don't know.
-Keep the answer concise.
-
-Context:
-{context}
-
-Question:
-{input}
-
-Answer:"""
+Use the retrieve_context tool to search the document store when the question is about
+the ingested knowledge base (documents, PDFs, code).
+If you don't know the answer after using your tools, say that you don't know.
+Keep the answer concise."""
 
 CODE_SYSTEM_PROMPT = """You are an expert assistant that generates code following EXACTLY the conventions,
 style, imports, and patterns of the project you are exploring. Before writing code:
