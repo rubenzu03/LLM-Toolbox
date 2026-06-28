@@ -47,7 +47,9 @@ def main():
 
     conn = sqlite3.connect("checkpoints.db", check_same_thread=False)
     checkpointer = SqliteSaver(conn)
-    chat_agent = build_chat_agent(llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH)
+    chat_agent = build_chat_agent(
+        llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH
+    )
     coding_agent = None
     thread_id = "default"
 
@@ -63,12 +65,16 @@ def main():
             continue
         if query == "/chat":
             if chat_agent is None:
-                chat_agent = build_chat_agent(llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH)
+                chat_agent = build_chat_agent(
+                    llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH
+                )
             mode = "chat"
             continue
         if query == "/code":
             if coding_agent is None:
-                coding_agent = build_coding_agent(llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH)
+                coding_agent = build_coding_agent(
+                    llm, checkpointer, enable_web_search=ENABLE_WEB_SEARCH
+                )
                 print("Coding agent ready.")
             mode = "code"
             continue

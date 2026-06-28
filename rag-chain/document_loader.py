@@ -15,7 +15,9 @@ def load_documents():
     for item in DOCUMENT_PATH.iterdir():
         if item.suffix == ".pdf":
             with open(item, "rb") as f:
-                with contextlib.redirect_stderr(open(os.devnull, "w", encoding="utf-8")):
+                with contextlib.redirect_stderr(
+                    open(os.devnull, "w", encoding="utf-8")
+                ):
                     pdf = pypdf.PdfReader(f, strict=False)
                     text = "".join(page.extract_text() for page in pdf.pages)
                 documents.append(

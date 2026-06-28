@@ -79,9 +79,18 @@ def write_file(filepath: str, content: str) -> str:
 tools = [search_codebase, read_full_file, list_project_files, write_file]
 
 
-def build_coding_agent(model: BaseChatModel, checkpointer=None, enable_web_search=False):
+def build_coding_agent(
+    model: BaseChatModel, checkpointer=None, enable_web_search=False
+):
     if enable_web_search:
-        agent_tools = [search_web, fetch_webpage, search_codebase, read_full_file, list_project_files, write_file]
+        agent_tools = [
+            search_web,
+            fetch_webpage,
+            search_codebase,
+            read_full_file,
+            list_project_files,
+            write_file,
+        ]
         prompt = (
             "You are a coding assistant with web search and codebase tools.\n\n"
             "IMPORTANT - Tool selection rules:\n"
