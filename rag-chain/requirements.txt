@@ -11,6 +11,8 @@ unstructured
 python-docx
 chromadb
 
+ddgs
+
 ruff
 
 python-dotenv
